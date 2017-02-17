@@ -33,12 +33,22 @@ namespace osu_AutoBeatmapConstructor
             mapContext = null;
         }
 
-        public Beatmap generateBeatmap()
+        public Beatmap generateBeatmap(PatternConfiguration config)
         {
+            addPatterns(config.patterns);
+            applyBeatmapStats(config.beatmapStats);
             return generatedMap;
         }
 
-        public void addPatterns(IEnumerable<ConfiguredPattern> patterns)
+        private void applyBeatmapStats(BeatmapStats beatmapStats)
+        {
+            generatedMap.CircleSize = beatmapStats.CS;
+            generatedMap.ApproachRate = beatmapStats.AR;
+            generatedMap.OverallDifficulty = beatmapStats.OD;
+            generatedMap.HPDrainRate = beatmapStats.HP;
+        }
+
+        private void addPatterns(IEnumerable<ConfiguredPattern> patterns)
         {
             foreach (var pattern in patterns)
             {
@@ -66,13 +76,6 @@ namespace osu_AutoBeatmapConstructor
         public void addBreak(BreakEvent b)
         {
             generatedMap.Events.Add(b);
-        }
-
-        public void clearPatterns()
-        {
-            generatedMap = new Beatmap(baseMap);
-            removeBreaks();
-            mapContext = null;
         }
     }
 }
